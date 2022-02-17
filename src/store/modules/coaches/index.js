@@ -28,6 +28,7 @@ export default {
       ],
     };
   },
+  // key:value
   mutations: mutations,
   actions,
   getters,

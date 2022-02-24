@@ -3,7 +3,7 @@
     <h3>{{ fullName }}</h3>
     <h4>${{ rate }} / hour</h4>
     <div>
-      <base-badge v-for="area in areas" :key="area" :type="areas" :title="area">
+      <base-badge v-for="area in areas" :key="area" :type="area" :title="area">
       </base-badge>
     </div>
     <div class="actions">
@@ -11,6 +11,7 @@
       <router-link to="/coaches/c1"> View Details </router-link> -->
       <!-- <router-link :to="coachContactLink"> Contact </router-link>
       <router-link :to="coachDetailsLink"> View Details </router-link> -->
+      <!-- Dynamic -->
       <base-button mode="outline" link :to="coachContactLink">
         Contact
       </base-button>
@@ -19,21 +20,21 @@
   </li>
 </template>
 <script>
-import BaseButton from '../ui/BaseButton.vue';
+// import BaseButton from '../ui/BaseButton.vue';
 export default {
-  components: { BaseButton },
+  // components: { BaseButton },
   props: ['id', 'firstName', 'lastName', 'areas', 'rate'],
   computed: {
     fullName() {
       return this.firstName + ' ' + this.lastName;
     },
     coachContactLink() {
-      //   return '/coaches' + this.id + '/contact'; //coaches/id/contact
+      //return '/coaches' + this.id + '/contact'; //coaches/id/contact
       return this.$route.path + '/' + this.id + '/contact';
     },
     coachDetailsLink() {
-      //   return '/coaches' + this.id; //coaches/id
-      return this.$route.path + this.id;
+      // return '/coaches' + this.id; //coaches/id
+      return this.$route.path + '/' + this.id;
     },
   },
 };

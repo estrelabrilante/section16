@@ -11,15 +11,13 @@
 import CoachForm from '../../components/coaches/CoachForm.vue';
 export default {
   components: { CoachForm },
-  data() {
-    return {};
-  },
+
   methods: {
     saveData(data) {
-      // namespace/actions
+      // namespace/actions,data
       this.$store.dispatch('coaches/registerCoach', data);
       // this.$router.push('/coaches')
-      //push or replace
+      //push or replace method on router
       this.$router.replace('/coaches');
     },
   },

@@ -6,7 +6,7 @@
   <base-card>
     <section>
       <div class="controls">
-        <base-button mode="outline">Refresh</base-button>
+        <base-button mode="outline" @click="loadCoaches">Refresh</base-button>
         <!-- <router-link to="/register">Register</router-link> -->
         <!--props:here link is true -->
         <base-button v-if="!isCoach" link to="/register"
@@ -53,7 +53,7 @@ export default {
     },
 
     filteredCoaches() {
-      const coaches = this.$store.getters['coaches/coachesGetter'];
+      const coaches = this.$store.getters['coaches/coaches'];
       // filter method
       return coaches.filter((coach) => {
         // includes built in method
@@ -73,9 +73,15 @@ export default {
       return this.$store.getters['coaches/hasCoaches'];
     },
   },
+  created() {
+    this.loadCoaches();
+  },
   methods: {
     setFilters(updateFilters) {
       this.activeFilters = updateFilters;
+    },
+    loadCoaches() {
+      this.$store.dispatch('coaches/loadCoaches');
     },
   },
 };

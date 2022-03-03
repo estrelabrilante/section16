@@ -11,7 +11,7 @@ const store = createStore({
   state() {
     return {
       //dummy id
-      userId: 'c3',
+      userId: 'c4',
     };
   },
   getters: {

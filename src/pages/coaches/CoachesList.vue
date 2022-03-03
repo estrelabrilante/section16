@@ -1,39 +1,49 @@
 <template>
-  <section>
-    Filter coach based on experience
-    <coach-filter @change-filter="setFilters"></coach-filter>
-  </section>
-  <base-card>
+  <div>
+    <!-- loading spinner and error handling to coach -->
+    <base-dialog :show="!!error" title="An error ocurred" @close="handleError">
+      <p>
+        {{ error }}
+      </p>
+    </base-dialog>
     <section>
-      <div class="controls">
-        <base-button mode="outline" @click="loadCoaches">Refresh</base-button>
-        <!-- <router-link to="/register">Register</router-link> -->
-        <!--props:here link is true -->
-        <base-button v-if="!isCoach && !isLoading" link to="/register"
-          >Register as coach</base-button
-        >
-      </div>
-      <div v-if="isLoading">
-        <base-spinner></base-spinner>
-      </div>
-      <ul v-else-if="hasCoaches">
-        List of coaches
-        <!-- <li v-for="coach in filteredCoaches" :key="coach.id">
+      Filter coach based on experience
+      <coach-filter @change-filter="setFilters"></coach-filter>
+    </section>
+    <base-card>
+      <section>
+        <div class="controls">
+          <base-button mode="outline" @click="loadCoaches(true)"
+            >Refresh</base-button
+          >
+          <!-- <router-link to="/register">Register</router-link> -->
+          <!--props:here link is true -->
+          <base-button v-if="!isCoach && !isLoading" link to="/register"
+            >Register as coach</base-button
+          >
+        </div>
+        <div v-if="isLoading">
+          <base-spinner></base-spinner>
+        </div>
+        <ul v-else-if="hasCoaches">
+          List of coaches
+          <!-- <li v-for="coach in filteredCoaches" :key="coach.id">
         {{ coach.firstName }}
       </li> -->
-        <coach-item
-          v-for="coach in filteredCoaches"
-          :key="coach.id"
-          :id="coach.id"
-          :first-name="coach.firstName"
-          :last-name="coach.lastName"
-          :areas="coach.areas"
-          :rate="coach.hourlyRate"
-        ></coach-item>
-      </ul>
-      <h3 v-else>No data found</h3>
-    </section>
-  </base-card>
+          <coach-item
+            v-for="coach in filteredCoaches"
+            :key="coach.id"
+            :id="coach.id"
+            :first-name="coach.firstName"
+            :last-name="coach.lastName"
+            :areas="coach.areas"
+            :rate="coach.hourlyRate"
+          ></coach-item>
+        </ul>
+        <h3 v-else>No data found</h3>
+      </section>
+    </base-card>
+  </div>
 </template>
 <script>
 import CoachItem from '../../components/coaches/CoachItem.vue';
@@ -44,6 +54,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      error: null,
       activeFilters: {
         frontend: true,
         backend: true,
@@ -78,16 +89,26 @@ export default {
     },
   },
   created() {
+    // when load coaches is true forces load again with Refresh button.
     this.loadCoaches();
   },
   methods: {
     setFilters(updateFilters) {
       this.activeFilters = updateFilters;
     },
-    async loadCoaches() {
+    async loadCoaches(refresh = false) {
       this.isLoading = true;
-      await this.$store.dispatch('coaches/loadCoaches');
+      try {
+        await this.$store.dispatch('coaches/loadCoaches', {
+          forceRefresh: refresh,
+        });
+      } catch (error) {
+        this.error = error.message || 'something went wrong';
+      }
       this.isLoading = false;
+    },
+    handleError() {
+      this.error = null;
     },
   },
 };

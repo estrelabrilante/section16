@@ -1,11 +1,14 @@
 <template>
-  Register Here
-  <section>
-    <base-card>
-      <h2>Register as a coach now.</h2>
-      <coach-form @save-data="saveData"></coach-form>
-    </base-card>
-  </section>
+  <div>
+    Register Here
+    <section>
+      <base-card>
+        <h2>Register as a coach now.</h2>
+        <!-- loading spinner and error handling to registration -->
+        <coach-form @save-data="saveData"></coach-form>
+      </base-card>
+    </section>
+  </div>
 </template>
 <script>
 import CoachForm from '../../components/coaches/CoachForm.vue';

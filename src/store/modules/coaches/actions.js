@@ -12,12 +12,12 @@ export default {
       areas: data.areas,
     };
     // fetch return a promise
-
-    //sending data to firebase by using ``
+    //Node: coaches
+    //sending data to firebase by using `` and ${}
     const response = await fetch(
       `https://findacoachwebapp-default-rtdb.firebaseio.com/coaches/${userId}.json`,
       {
-        //PUT: ONE COACH PER USER
+        //PUT: ONE COACH PER USER // POST is not used here as add a new every time
         method: 'PUT',
         body: JSON.stringify(coachData),
       }
@@ -34,14 +34,23 @@ export default {
       id: userId,
     });
   },
-  async loadCoaches(context) {
-    //load from firebase
+  async loadCoaches(context, payload) {
+    //shouldUpdate is false
+
+    if (!payload.forceRefresh && !context.getters.shouldUpdate) {
+      return;
+    }
+    // otherwise shouldUpdate is true and load again from firebase.
+    //load from firebase (GET)
     const response = await fetch(
-      `https://findacoachwebapp-default-rtdb.firebaseio.com/coaches.json`
+      `https://findacoachwebapp-default-rtdb.firebaseio.com/coaches.json
+      `
     );
     const responseData = await response.json();
     if (!response.ok) {
-      //...error
+      //...technical error or response is okay error
+      const error = new Error(responseData.message || 'Failed to fetch');
+      throw error;
     }
     const coaches = [];
     for (const key in responseData) {
@@ -55,6 +64,10 @@ export default {
       };
       coaches.push(coach);
     }
+    //mutation setCoaches
     context.commit('setCoaches', coaches);
+    //mutations setFetchTimeStamp
+    //no payload needed
+    context.commit('setFetchTimeStamp');
   },
 };
